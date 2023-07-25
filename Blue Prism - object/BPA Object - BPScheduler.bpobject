@@ -1,0 +1,611 @@
+﻿<process name="BPScheduler" version="1.0" bpversion="6.10.5.64603" narrative="An object to interact with the better prism scheduler." byrefcollection="true" type="object" runmode="Exclusive" preferredid="7693483f-4bf2-40a4-a35b-27e78465c17a">
+  <appdef>
+    <element name="Application Root">
+      <id>4833a39d-a157-464e-9be6-7728bd3b4ecb</id>
+      <type>Application</type>
+      <basetype>Application</basetype>
+      <datatype>unknown</datatype>
+      <diagnose>False</diagnose>
+    </element>
+  </appdef>
+  <view>
+    <camerax>0</camerax>
+    <cameray>0</cameray>
+    <zoom version="2">1.25</zoom>
+  </view>
+  <preconditions />
+  <endpoint narrative="" />
+  <subsheet subsheetid="e4e330bc-87f8-4717-93ac-8d47b7c4bdda" type="CleanUp" published="True">
+    <name>Clean Up</name>
+    <view>
+      <camerax>0</camerax>
+      <cameray>0</cameray>
+      <zoom version="2">1.25</zoom>
+    </view>
+  </subsheet>
+  <subsheet subsheetid="be2492c3-be89-48c4-9903-fad8dc4ca066" type="Normal" published="True">
+    <name>Start</name>
+    <view>
+      <camerax>0</camerax>
+      <cameray>0</cameray>
+      <zoom version="2">1.25</zoom>
+    </view>
+  </subsheet>
+  <subsheet subsheetid="a360c702-946e-424b-b7f0-ae013cf5542c" type="Normal" published="True">
+    <name>Get cluster activity</name>
+    <view>
+      <camerax>0</camerax>
+      <cameray>0</cameray>
+      <zoom version="2">1.25</zoom>
+    </view>
+  </subsheet>
+  <subsheet subsheetid="a981a883-bdf6-4ad8-abd1-00d57a4633fa" type="Normal" published="True">
+    <name>Take screenshot</name>
+    <view>
+      <camerax>0</camerax>
+      <cameray>153</cameray>
+      <zoom version="2">1.25</zoom>
+    </view>
+  </subsheet>
+  <stage stageid="32ad6251-cab9-48ee-89b9-a2b4e88e9967" name="Start" type="Start">
+    <loginhibit />
+    <display x="15" y="-105" />
+    <onsuccess>082b8daa-4dd1-466a-95ea-21c7281a39ce</onsuccess>
+  </stage>
+  <stage stageid="082b8daa-4dd1-466a-95ea-21c7281a39ce" name="End" type="End">
+    <loginhibit />
+    <display x="15" y="90" />
+  </stage>
+  <stage stageid="53e7e143-ebad-4450-9991-85a99b82f34b" name="Stage1" type="ProcessInfo">
+    <display x="-195" y="-105" w="150" h="90" />
+    <references>
+      <reference>System.dll</reference>
+      <reference>System.Data.dll</reference>
+      <reference>System.Xml.dll</reference>
+      <reference>System.Drawing.dll</reference>
+      <reference>System.Core.dll</reference>
+    </references>
+    <imports>
+      <import>System</import>
+      <import>System.Drawing</import>
+      <import>System.Data</import>
+      <import>System.Runtime.InteropServices</import>
+      <import>System.Drawing.Imaging</import>
+      <import>System.IO</import>
+    </imports>
+    <language>csharp</language>
+    <globalcode><![CDATA[]]></globalcode>
+    <code><![CDATA[[DllImport("user32.dll")]
+public static extern IntPtr GetForegroundWindow();
+	
+	public class ScreenCapture
+    {
+        public Image CaptureScreen() 
+        {
+            return CaptureWindow( User32.GetDesktopWindow() );
+        }
+		
+        public Image CaptureWindow(IntPtr handle)
+        {
+            // get te hDC of the target window
+            IntPtr hdcSrc = User32.GetWindowDC(handle);
+            // get the size
+            User32.RECT windowRect = new User32.RECT();
+            User32.GetWindowRect(handle,ref windowRect);
+            int width = windowRect.right - windowRect.left;
+            int height = windowRect.bottom - windowRect.top;
+            // create a device context we can copy to
+            IntPtr hdcDest = GDI32.CreateCompatibleDC(hdcSrc);
+            // create a bitmap we can copy it to,
+            // using GetDeviceCaps to get the width/height
+            IntPtr hBitmap = GDI32.CreateCompatibleBitmap(hdcSrc,width,height); 
+            // select the bitmap object
+            IntPtr hOld = GDI32.SelectObject(hdcDest,hBitmap);
+            // bitblt over
+            GDI32.BitBlt(hdcDest,0,0,width,height,hdcSrc,0,0,GDI32.SRCCOPY);
+            // restore selection
+            GDI32.SelectObject(hdcDest,hOld);
+            // clean up 
+            GDI32.DeleteDC(hdcDest);
+            User32.ReleaseDC(handle,hdcSrc);
+            // get a .NET image object for it
+            Image img = Image.FromHbitmap(hBitmap);
+            // free up the Bitmap object
+            GDI32.DeleteObject(hBitmap);
+            return img;
+        }
+		
+        public void CaptureWindowToFile(IntPtr handle, string filename, ImageFormat format) 
+        {
+            Image img = CaptureWindow(handle);
+            img.Save(filename,format);
+        }
+		
+        public void CaptureScreenToFile(string filename, ImageFormat format) 
+        {
+            Image img = CaptureScreen();
+            img.Save(filename,format);
+        }
+		
+        private class GDI32
+        {
+            
+            public const int SRCCOPY = 0x00CC0020; // BitBlt dwRop parameter
+            [DllImport("gdi32.dll")]
+            public static extern bool BitBlt(IntPtr hObject,int nXDest,int nYDest,
+                int nWidth,int nHeight,IntPtr hObjectSource,
+                int nXSrc,int nYSrc,int dwRop);
+            [DllImport("gdi32.dll")]
+            public static extern IntPtr CreateCompatibleBitmap(IntPtr hDC,int nWidth, 
+                int nHeight);
+            [DllImport("gdi32.dll")]
+            public static extern IntPtr CreateCompatibleDC(IntPtr hDC);
+            [DllImport("gdi32.dll")]
+            public static extern bool DeleteDC(IntPtr hDC);
+            [DllImport("gdi32.dll")]
+            public static extern bool DeleteObject(IntPtr hObject);
+            [DllImport("gdi32.dll")]
+            public static extern IntPtr SelectObject(IntPtr hDC,IntPtr hObject);
+        }
+		
+        private class User32
+        {
+            [StructLayout(LayoutKind.Sequential)]
+            public struct RECT
+            {
+                public int left;
+                public int top;
+                public int right;
+                public int bottom;
+            }
+            [DllImport("user32.dll")]
+            public static extern IntPtr GetDesktopWindow();
+            [DllImport("user32.dll")]
+            public static extern IntPtr GetWindowDC(IntPtr hWnd);
+            [DllImport("user32.dll")]
+            public static extern IntPtr ReleaseDC(IntPtr hWnd,IntPtr hDC);
+            [DllImport("user32.dll")]
+            public static extern IntPtr GetWindowRect(IntPtr hWnd,ref RECT rect);
+        }
+    }
+]]></code>
+  </stage>
+  <stage stageid="750134b2-4bf4-4035-8095-302b528d0357" name="Clean Up" type="SubSheetInfo">
+    <subsheetid>e4e330bc-87f8-4717-93ac-8d47b7c4bdda</subsheetid>
+    <display x="-195" y="-105" w="150" h="90" />
+  </stage>
+  <stage stageid="7d58d7d2-9a48-4da8-a615-2ae773f647cb" name="Start" type="Start">
+    <subsheetid>e4e330bc-87f8-4717-93ac-8d47b7c4bdda</subsheetid>
+    <loginhibit />
+    <display x="15" y="-105" />
+    <onsuccess>9fe27526-76da-4d39-bf1e-d57ad9d22629</onsuccess>
+  </stage>
+  <stage stageid="9fe27526-76da-4d39-bf1e-d57ad9d22629" name="End" type="End">
+    <subsheetid>e4e330bc-87f8-4717-93ac-8d47b7c4bdda</subsheetid>
+    <loginhibit />
+    <display x="15" y="90" />
+  </stage>
+  <stage stageid="67324409-0ea6-40b6-a0ae-5fd60175221a" name="Start" type="SubSheetInfo">
+    <subsheetid>be2492c3-be89-48c4-9903-fad8dc4ca066</subsheetid>
+    <display x="-195" y="-105" w="150" h="90" />
+  </stage>
+  <stage stageid="e5666067-c268-44e6-8b1a-2657a394972e" name="Start" type="Start">
+    <subsheetid>be2492c3-be89-48c4-9903-fad8dc4ca066</subsheetid>
+    <loginhibit />
+    <display x="15" y="-105" />
+    <inputs>
+      <input type="text" name="BPScheduler Url" narrative="The location of the scheduler API endpoint" stage="BPScheduler Url" />
+      <input type="text" name="Client secret" stage="Client secret" />
+    </inputs>
+    <onsuccess>f3163e8c-49d3-4197-a218-5d7341c665f6</onsuccess>
+  </stage>
+  <stage stageid="9e90c44f-19c6-4a24-a949-3a46270e7333" name="End" type="End">
+    <subsheetid>be2492c3-be89-48c4-9903-fad8dc4ca066</subsheetid>
+    <loginhibit />
+    <display x="15" y="60" />
+  </stage>
+  <stage stageid="85276709-d50d-4686-a6a1-dcd44d983942" name="Input" type="Block">
+    <subsheetid>be2492c3-be89-48c4-9903-fad8dc4ca066</subsheetid>
+    <display x="-270" y="-45" w="150" h="105" />
+    <font family="Segoe UI" size="10" style="Regular" color="339966" />
+  </stage>
+  <stage stageid="7aaf3ac2-9bad-41f6-91fd-2e604de1b23e" name="Variabler" type="Block">
+    <subsheetid>be2492c3-be89-48c4-9903-fad8dc4ca066</subsheetid>
+    <display x="-270" y="135" w="150" h="45" />
+    <font family="Segoe UI" size="10" style="Regular" color="666699" />
+  </stage>
+  <stage stageid="8338ac3b-a64d-4e47-8e20-682398f8c011" name="Konstanter" type="Block">
+    <subsheetid>be2492c3-be89-48c4-9903-fad8dc4ca066</subsheetid>
+    <display x="-270" y="75" w="150" h="45" />
+    <font family="Segoe UI" size="10" style="Regular" color="008080" />
+  </stage>
+  <stage stageid="195a1f58-ccde-4c42-adbe-8de202d61e98" name="Output" type="Block">
+    <subsheetid>be2492c3-be89-48c4-9903-fad8dc4ca066</subsheetid>
+    <display x="-270" y="195" w="150" h="45" />
+    <font family="Segoe UI" size="10" style="Regular" color="800080" />
+  </stage>
+  <stage stageid="c64c698c-9bb1-4c16-bb61-56acc3bb16ee" name="Input" type="Block">
+    <display x="-270" y="-45" w="150" h="45" />
+    <font family="Segoe UI" size="10" style="Regular" color="339966" />
+  </stage>
+  <stage stageid="ca2c5530-2c6a-4c3e-912c-e79ca36786e2" name="Variabler" type="Block">
+    <display x="-270" y="75" w="150" h="45" />
+    <font family="Segoe UI" size="10" style="Regular" color="666699" />
+  </stage>
+  <stage stageid="546b03e5-e0d1-48f6-8778-11e9aca3854f" name="Konstanter" type="Block">
+    <display x="-270" y="15" w="150" h="45" />
+    <font family="Segoe UI" size="10" style="Regular" color="008080" />
+  </stage>
+  <stage stageid="4593ca94-9e7d-4319-999a-8e870c6e8547" name="Output" type="Block">
+    <display x="-270" y="135" w="150" h="45" />
+    <font family="Segoe UI" size="10" style="Regular" color="800080" />
+  </stage>
+  <stage stageid="512771b7-0e01-481f-985c-08ce10cbc6a4" name="Input" type="Block">
+    <subsheetid>e4e330bc-87f8-4717-93ac-8d47b7c4bdda</subsheetid>
+    <display x="-270" y="-45" w="150" h="45" />
+    <font family="Segoe UI" size="10" style="Regular" color="339966" />
+  </stage>
+  <stage stageid="396a6cec-6bdb-4b17-aedb-077d7723cb64" name="Variabler" type="Block">
+    <subsheetid>e4e330bc-87f8-4717-93ac-8d47b7c4bdda</subsheetid>
+    <display x="-270" y="75" w="150" h="45" />
+    <font family="Segoe UI" size="10" style="Regular" color="666699" />
+  </stage>
+  <stage stageid="d53d37ed-9ac2-4823-a86b-422ca18569e8" name="Konstanter" type="Block">
+    <subsheetid>e4e330bc-87f8-4717-93ac-8d47b7c4bdda</subsheetid>
+    <display x="-270" y="15" w="150" h="45" />
+    <font family="Segoe UI" size="10" style="Regular" color="008080" />
+  </stage>
+  <stage stageid="551fc48f-9d43-4189-af53-7fa5c39a048b" name="Output" type="Block">
+    <subsheetid>e4e330bc-87f8-4717-93ac-8d47b7c4bdda</subsheetid>
+    <display x="-270" y="135" w="150" h="45" />
+    <font family="Segoe UI" size="10" style="Regular" color="800080" />
+  </stage>
+  <stage stageid="ba29ecc8-3149-4ad5-80cd-c4c4b4e255d4" name="BPScheduler Url" type="Data">
+    <subsheetid>be2492c3-be89-48c4-9903-fad8dc4ca066</subsheetid>
+    <display x="-195" y="-15" w="120" h="30" />
+    <datatype>text</datatype>
+    <initialvalue xml:space="preserve">http://localhost:9000</initialvalue>
+    <alwaysinit />
+  </stage>
+  <stage stageid="5a12dd4b-640c-4b6a-985f-b09ff307f479" name="Client secret" type="Data">
+    <subsheetid>be2492c3-be89-48c4-9903-fad8dc4ca066</subsheetid>
+    <display x="-195" y="30" w="120" h="30" />
+    <datatype>text</datatype>
+    <initialvalue />
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="f3163e8c-49d3-4197-a218-5d7341c665f6" name="Url provided?" type="Decision">
+    <subsheetid>be2492c3-be89-48c4-9903-fad8dc4ca066</subsheetid>
+    <loginhibit />
+    <display x="15" y="-60" />
+    <decision expression="[BPScheduler Url] &lt;&gt; &quot;&quot;" />
+    <ontrue>9e90c44f-19c6-4a24-a949-3a46270e7333</ontrue>
+    <onfalse>2163b0e3-b61b-4fea-9681-d14d4dac3019</onfalse>
+  </stage>
+  <stage stageid="2163b0e3-b61b-4fea-9681-d14d4dac3019" name="No Url" type="Exception">
+    <subsheetid>be2492c3-be89-48c4-9903-fad8dc4ca066</subsheetid>
+    <display x="150" y="-60" />
+    <exception localized="yes" type="Invalid Input Parameter" detail="&quot;BPScheduler Url is required&quot;" />
+  </stage>
+  <stage stageid="d4f15468-332c-469f-a034-1af91147cd47" name="Get cluster activity" type="SubSheetInfo">
+    <subsheetid>a360c702-946e-424b-b7f0-ae013cf5542c</subsheetid>
+    <display x="-195" y="-105" w="150" h="90" />
+  </stage>
+  <stage stageid="853ed944-63a5-4e1d-a2d4-e8bd7660c87f" name="Start" type="Start">
+    <subsheetid>a360c702-946e-424b-b7f0-ae013cf5542c</subsheetid>
+    <loginhibit />
+    <display x="15" y="-105" />
+    <onsuccess>1536c88f-7a49-4430-b770-5b49718d50b9</onsuccess>
+  </stage>
+  <stage stageid="53f6dbbd-13bf-47bc-b51f-8e2e10fa3653" name="End" type="End">
+    <subsheetid>a360c702-946e-424b-b7f0-ae013cf5542c</subsheetid>
+    <loginhibit />
+    <display x="15" y="60" />
+    <outputs>
+      <output type="collection" name="Cluster" narrative="Contains all currently running tasks" stage="Cluster" />
+    </outputs>
+  </stage>
+  <stage stageid="1536c88f-7a49-4430-b770-5b49718d50b9" name="Get dashboard" type="Action">
+    <subsheetid>a360c702-946e-424b-b7f0-ae013cf5542c</subsheetid>
+    <loginhibit onsuccess="true" />
+    <display x="15" y="-45" />
+    <inputs>
+      <input type="text" name="Address URL" friendlyname="Address URL" narrative="The URL to send the HTTP data to" expr="[BPScheduler Url] &amp; &quot;/api/dashboard&quot;" />
+      <input type="text" name="Body" friendlyname="Body" narrative="The body text of the HTTP request" expr="" />
+      <input type="flag" name="Use Proxy" friendlyname="Use Proxy" narrative="Set true if you need to use a proxy" expr="" />
+      <input type="text" name="Content Type" friendlyname="Content Type" narrative="The content type of the HTTP request." expr="" />
+      <input type="text" name="Method" friendlyname="Method" narrative="The method of the HTTP request." expr="&quot;GET&quot;" />
+      <input type="text" name="Proxy URL" friendlyname="Proxy URL" narrative="OPTIONAL: The proxy url" expr="" />
+      <input type="text" name="Proxy Username" friendlyname="Proxy Username" narrative="OPTIONAL: The proxy username" expr="" />
+      <input type="password" name="Proxy Password" friendlyname="Proxy Password" narrative="OPTIONAL: The proxy password" expr="" />
+      <input type="collection" name="Headers" friendlyname="Headers" narrative="OPTIONAL: Headers" expr="" />
+      <input type="text" name="Accept" friendlyname="Accept" narrative="OPTIONAL: Accept" expr="&quot;application/json&quot;" />
+      <input type="text" name="Username" friendlyname="Username" narrative="OPTIONAL: Basic Authentication username" expr="" />
+      <input type="password" name="Password" friendlyname="Password" narrative="OPTIONAL: Basic Authenction password" expr="" />
+      <input type="text" name="Certificate ID" friendlyname="Certificate ID" narrative="OPTIONAL: The id of the client authentication certificate" expr="" />
+      <input type="flag" name="Force Pre Authorization" friendlyname="Force Pre Authorization" narrative="OPTIONAL: Force the request to send the authorization headers" expr="" />
+      <input type="flag" name="File URL" friendlyname="File URL" narrative="OPTIONAL: Is the JSON Body a file instead?" expr="" />
+    </inputs>
+    <outputs>
+      <output type="text" name="Result" friendlyname="Result" narrative="The result from the Post query." stage="Json" />
+      <output type="text" name="Headers as Json" friendlyname="Headers as Json" narrative="The returned headers response as Json" stage="" />
+    </outputs>
+    <onsuccess>062af5be-ff4b-4f78-9f4b-6ea799a550e5</onsuccess>
+    <resource object="Utility - HTTP" action="HTTP Request" />
+  </stage>
+  <stage stageid="5614a4dc-b653-457a-85ab-552e2818f579" name="Json" type="Data">
+    <subsheetid>a360c702-946e-424b-b7f0-ae013cf5542c</subsheetid>
+    <display x="-195" y="105" w="120" h="30" />
+    <datatype>text</datatype>
+    <initialvalue />
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="65c9d702-aecb-493f-aa7c-aa48078f8329" name="Input" type="Block">
+    <subsheetid>a360c702-946e-424b-b7f0-ae013cf5542c</subsheetid>
+    <display x="-270" y="-45" w="150" h="45" />
+    <font family="Segoe UI" size="10" style="Regular" color="339966" />
+  </stage>
+  <stage stageid="33cb84ba-a8b9-469c-ab9a-2c0238cfc034" name="Variabler" type="Block">
+    <subsheetid>a360c702-946e-424b-b7f0-ae013cf5542c</subsheetid>
+    <display x="-270" y="75" w="150" h="60" />
+    <font family="Segoe UI" size="10" style="Regular" color="666699" />
+  </stage>
+  <stage stageid="b28b7dc5-3e28-4518-88de-5815b383727d" name="Konstanter" type="Block">
+    <subsheetid>a360c702-946e-424b-b7f0-ae013cf5542c</subsheetid>
+    <display x="-270" y="15" w="150" h="45" />
+    <font family="Segoe UI" size="10" style="Regular" color="008080" />
+  </stage>
+  <stage stageid="b1d9f0e1-9aa6-42a0-89cf-d32e1e093749" name="Output" type="Block">
+    <subsheetid>a360c702-946e-424b-b7f0-ae013cf5542c</subsheetid>
+    <display x="-270" y="150" w="150" h="60" />
+    <font family="Segoe UI" size="10" style="Regular" color="800080" />
+  </stage>
+  <stage stageid="062af5be-ff4b-4f78-9f4b-6ea799a550e5" name="Convert json" type="Action">
+    <subsheetid>a360c702-946e-424b-b7f0-ae013cf5542c</subsheetid>
+    <loginhibit onsuccess="true" />
+    <display x="15" y="0" />
+    <inputs>
+      <input type="text" name="json" friendlyname="json" expr="[Json]" />
+    </inputs>
+    <outputs>
+      <output type="collection" name="Result" friendlyname="Result" stage="Cluster" />
+    </outputs>
+    <onsuccess>53f6dbbd-13bf-47bc-b51f-8e2e10fa3653</onsuccess>
+    <resource object="Utility - JSON" action="JSON to Collection (skipping JArray)" />
+  </stage>
+  <stage stageid="b2903b64-e1f3-4fb2-929d-1a3301689b2f" name="Cluster" type="Collection">
+    <subsheetid>a360c702-946e-424b-b7f0-ae013cf5542c</subsheetid>
+    <display x="-195" y="180" w="120" h="30" />
+    <datatype>collection</datatype>
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="cc9b5e95-7811-4750-99e7-6b430f9f0e4e" name="Take screenshot" type="SubSheetInfo">
+    <subsheetid>a981a883-bdf6-4ad8-abd1-00d57a4633fa</subsheetid>
+    <narrative>Use this function to associate a screenshot with a BluePrism session</narrative>
+    <display x="-195" y="-105" w="150" h="90" />
+  </stage>
+  <stage stageid="3bed4ecf-8f17-4d0b-8bf9-741f42a0e330" name="Start" type="Start">
+    <subsheetid>a981a883-bdf6-4ad8-abd1-00d57a4633fa</subsheetid>
+    <loginhibit />
+    <display x="15" y="-105" />
+    <inputs>
+      <input type="text" name="ItemKey" stage="ItemKey" />
+    </inputs>
+    <onsuccess>d134007c-4d6f-4187-be73-ae8cb473a101</onsuccess>
+  </stage>
+  <stage stageid="10f41636-4eae-4367-8f06-8f2f26aaaeff" name="End" type="End">
+    <subsheetid>a981a883-bdf6-4ad8-abd1-00d57a4633fa</subsheetid>
+    <loginhibit />
+    <display x="15" y="375" />
+  </stage>
+  <stage stageid="d134007c-4d6f-4187-be73-ae8cb473a101" name="Take screenshot of entire screen" type="Code">
+    <subsheetid>a981a883-bdf6-4ad8-abd1-00d57a4633fa</subsheetid>
+    <loginhibit />
+    <display x="15" y="-30" w="90" h="60" />
+    <outputs>
+      <output type="text" name="location" stage="Screenshot location" />
+    </outputs>
+    <onsuccess>0d257f9b-2e4e-40a3-a471-3343b299afd0</onsuccess>
+    <code><![CDATA[ScreenCapture sc = new ScreenCapture();
+// create temp file
+var filename = Path.ChangeExtension(Path.GetTempPath() + Guid.NewGuid().ToString(), ".png");
+// capture the screen, and save it at temp file location
+sc.CaptureScreenToFile(filename,ImageFormat.Png);
+
+location = filename;]]></code>
+  </stage>
+  <stage stageid="ced7040e-47ad-4a7b-9dff-f57af0a347c2" name="Screenshot location" type="Data">
+    <subsheetid>a981a883-bdf6-4ad8-abd1-00d57a4633fa</subsheetid>
+    <loginhibit />
+    <display x="-195" y="120" w="120" h="30" />
+    <datatype>text</datatype>
+    <initialvalue />
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="f9fc77e4-00b7-4f4c-9b4a-f3efaeaab428" name="Input" type="Block">
+    <subsheetid>a981a883-bdf6-4ad8-abd1-00d57a4633fa</subsheetid>
+    <display x="-270" y="-45" w="150" h="60" />
+    <font family="Segoe UI" size="10" style="Regular" color="339966" />
+  </stage>
+  <stage stageid="6f9260b1-7a7a-428a-b6a7-7eeeab90cbb8" name="Variables" type="Block">
+    <subsheetid>a981a883-bdf6-4ad8-abd1-00d57a4633fa</subsheetid>
+    <display x="-270" y="90" w="150" h="240" />
+    <font family="Segoe UI" size="10" style="Regular" color="666699" />
+  </stage>
+  <stage stageid="836eaa10-c89c-4277-8ade-43e2592531cf" name="Constants" type="Block">
+    <subsheetid>a981a883-bdf6-4ad8-abd1-00d57a4633fa</subsheetid>
+    <display x="-270" y="30" w="150" h="45" />
+    <font family="Segoe UI" size="10" style="Regular" color="008080" />
+  </stage>
+  <stage stageid="82de1e36-c476-482d-8a42-bf7e107cd7af" name="Output" type="Block">
+    <subsheetid>a981a883-bdf6-4ad8-abd1-00d57a4633fa</subsheetid>
+    <display x="-270" y="345" w="150" h="45" />
+    <font family="Segoe UI" size="10" style="Regular" color="800080" />
+  </stage>
+  <stage stageid="6fe05abc-6940-4574-b0c7-e32bc0f59373" name="Screenshot" type="Data">
+    <subsheetid>a981a883-bdf6-4ad8-abd1-00d57a4633fa</subsheetid>
+    <loginhibit />
+    <display x="-195" y="165" w="120" h="30" />
+    <datatype>binary</datatype>
+    <initialvalue />
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="0d257f9b-2e4e-40a3-a471-3343b299afd0" name="Load Screenshot" type="Calculation">
+    <subsheetid>a981a883-bdf6-4ad8-abd1-00d57a4633fa</subsheetid>
+    <loginhibit />
+    <display x="15" y="30" />
+    <onsuccess>7b424f22-c13e-4c95-abf1-70e0f2de1dff</onsuccess>
+    <calculation expression="LoadBinaryFile([Screenshot location])" stage="Screenshot" />
+  </stage>
+  <stage stageid="7b424f22-c13e-4c95-abf1-70e0f2de1dff" name="Delete screenshot from disk" type="Action">
+    <subsheetid>a981a883-bdf6-4ad8-abd1-00d57a4633fa</subsheetid>
+    <loginhibit onsuccess="true" />
+    <display x="15" y="75" />
+    <inputs>
+      <input type="text" name="File Name" friendlyname="File Name" narrative="The full path to the file to delete" expr="[Screenshot location]" />
+    </inputs>
+    <outputs>
+      <output type="flag" name="Success" friendlyname="Success" narrative="True if successful" stage="" />
+      <output type="text" name="Message" friendlyname="Message" narrative="An error message if unsuccessful" stage="" />
+    </outputs>
+    <onsuccess>03be0699-3357-4725-94d6-f3214840bc38</onsuccess>
+    <resource object="Utility - File Management" action="Delete File" />
+  </stage>
+  <stage stageid="300c4284-0b78-499f-af63-2938652cc1b0" name="Save screenshot" type="Action">
+    <subsheetid>a981a883-bdf6-4ad8-abd1-00d57a4633fa</subsheetid>
+    <loginhibit onsuccess="true" />
+    <display x="15" y="255" />
+    <inputs>
+      <input type="text" name="Address URL" friendlyname="Address URL" narrative="The URL to send the HTTP data to" expr="[BPScheduler Url] &amp; &quot;/api/screenshot&quot;" />
+      <input type="flag" name="Use Proxy" friendlyname="Use Proxy" narrative="Set true if you need to use a proxy" expr="" />
+      <input type="text" name="Proxy URL" friendlyname="Proxy URL" narrative="OPTIONAL: The proxy url" expr="" />
+      <input type="text" name="Proxy Username" friendlyname="Proxy Username" narrative="OPTIONAL: The proxy username" expr="" />
+      <input type="password" name="Proxy Password" friendlyname="Proxy Password" narrative="OPTIONAL: The proxy password" expr="" />
+      <input type="collection" name="Headers" friendlyname="Headers" narrative="OPTIONAL: Headers" expr="" />
+      <input type="text" name="Accept" friendlyname="Accept" narrative="OPTIONAL: Accept" expr="&quot;application/json&quot;" />
+      <input type="text" name="Body" friendlyname="Body" narrative="The body text of the HTTP request" expr="[Json]" />
+      <input type="text" name="Content Type" friendlyname="Content Type" narrative="The content type of the HTTP request." expr="&quot;application/json&quot;" />
+      <input type="text" name="Method" friendlyname="Method" narrative="The method of the HTTP request." expr="&quot;POST&quot;" />
+      <input type="text" name="Username" friendlyname="Username" narrative="OPTIONAL: Basic Authentication username" expr="" />
+      <input type="password" name="Password" friendlyname="Password" narrative="OPTIONAL: Basic Authenction password" expr="" />
+      <input type="text" name="Certificate ID" friendlyname="Certificate ID" narrative="OPTIONAL: The id of the client authentication certificate" expr="" />
+      <input type="flag" name="Force Pre Authorization" friendlyname="Force Pre Authorization" narrative="OPTIONAL: Force the request to send the 'Authorization' header for HTTP Basic." expr="" />
+      <input type="flag" name="File URL" friendlyname="File URL" narrative="OPTIONAL: Is the JSON Body a file instead?" expr="" />
+      <input type="flag" name="Use Bearer Token" friendlyname="Use Bearer Token" expr="" />
+      <input type="text" name="Bearer Token" friendlyname="Bearer Token" narrative="OPTIONAL: If you 'Use Bearer Token' is set to True, this must be set to the value of the actual Bearer Token." expr="" />
+      <input type="flag" name="Allow Auto Redirects" friendlyname="Allow Auto Redirects" narrative="OPTIONAL: If you prefer to manually handle redirects (ie. HTTP 302) set this flag to False. Default value is True." expr="" />
+      <input type="number" name="Maximum Redirects" friendlyname="Maximum Redirects" narrative="OPTIONAL: If 'Allow Auto Redirect' is True, this controls the maximum number of redirects to allow. Default value is 50." expr="" />
+      <input type="number" name="Request Timeout" friendlyname="Request Timeout" narrative="OPTIONAL: This  property controls the length of time, in milliseconds, until the request times out and throws a WebException. Default value is 100000 milliseconds (i.e. 100 seconds)." expr="" />
+    </inputs>
+    <outputs>
+      <output type="text" name="Result" friendlyname="Result" narrative="The result from the Post query." stage="" />
+      <output type="text" name="Headers as Json" friendlyname="Headers as Json" narrative="The returned headers response as Json" stage="" />
+      <output type="number" name="Status Code" friendlyname="Status Code" narrative="The HTTP status code associated with the request." stage="Status Code" />
+    </outputs>
+    <onsuccess>a0d8ac7c-78d0-4c79-84e7-e10cc285668b</onsuccess>
+    <resource object="Utility - HTTP" action="HTTP Request" />
+  </stage>
+  <stage stageid="2e02a581-1138-4df2-afc8-2fa30cac4aa4" name="Data" type="Collection">
+    <subsheetid>a981a883-bdf6-4ad8-abd1-00d57a4633fa</subsheetid>
+    <loginhibit />
+    <display x="-195" y="210" w="120" h="30" />
+    <datatype>collection</datatype>
+    <private />
+    <alwaysinit />
+    <collectioninfo>
+      <singlerow />
+      <field name="Screenshot" type="text" />
+      <field name="Mimetype" type="text" />
+      <field name="BPSessionId" type="text" />
+      <field name="ItemKey" type="text" />
+    </collectioninfo>
+    <initialvalue>
+      <singlerow />
+      <row>
+        <field name="Screenshot" type="text" value="" />
+        <field name="Mimetype" type="text" value="" />
+        <field name="BPSessionId" type="text" value="" />
+        <field name="ItemKey" type="text" value="" />
+      </row>
+    </initialvalue>
+  </stage>
+  <stage stageid="03be0699-3357-4725-94d6-f3214840bc38" name="Convert to base64" type="Action">
+    <subsheetid>a981a883-bdf6-4ad8-abd1-00d57a4633fa</subsheetid>
+    <loginhibit onsuccess="true" />
+    <display x="15" y="120" />
+    <inputs>
+      <input type="binary" name="Data" friendlyname="Data" narrative="Binære data som skal encodes" expr="[Screenshot]" />
+    </inputs>
+    <outputs>
+      <output type="text" name="Base64" friendlyname="Base64" narrative="De binære data encoded som en base64 streng" stage="Data.Screenshot" />
+    </outputs>
+    <onsuccess>6c8bb617-aca8-4864-beff-d235dca76054</onsuccess>
+    <resource object="Utility - Odk" action="Binary: Base64 Encode" />
+  </stage>
+  <stage stageid="5f4aa7a4-3991-472f-9315-379d0511d467" name="Convert to JSON" type="Action">
+    <subsheetid>a981a883-bdf6-4ad8-abd1-00d57a4633fa</subsheetid>
+    <loginhibit onsuccess="true" />
+    <display x="15" y="210" />
+    <inputs>
+      <input type="collection" name="Data" friendlyname="Data" expr="[Data]" />
+    </inputs>
+    <outputs>
+      <output type="text" name="JSON" friendlyname="JSON" stage="Json" />
+    </outputs>
+    <onsuccess>300c4284-0b78-499f-af63-2938652cc1b0</onsuccess>
+    <resource object="Utility - JSON" action="Collection to JSON" />
+  </stage>
+  <stage stageid="07b0e208-0f74-436a-890a-85c9f503a215" name="Json" type="Data">
+    <subsheetid>a981a883-bdf6-4ad8-abd1-00d57a4633fa</subsheetid>
+    <display x="-195" y="255" w="120" h="30" />
+    <datatype>text</datatype>
+    <initialvalue />
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="6c8bb617-aca8-4864-beff-d235dca76054" name="Set information" type="MultipleCalculation">
+    <subsheetid>a981a883-bdf6-4ad8-abd1-00d57a4633fa</subsheetid>
+    <loginhibit />
+    <display x="15" y="165" />
+    <onsuccess>5f4aa7a4-3991-472f-9315-379d0511d467</onsuccess>
+    <steps>
+      <calculation expression="&quot;image/png&quot;" stage="Data.Mimetype" />
+      <calculation expression="GetSessionId()" stage="Data.BPSessionId" />
+      <calculation expression="[ItemKey]" stage="Data.ItemKey" />
+    </steps>
+  </stage>
+  <stage stageid="6f0ad23c-bc6f-4d56-9a30-219829d09473" name="ItemKey" type="Data">
+    <subsheetid>a981a883-bdf6-4ad8-abd1-00d57a4633fa</subsheetid>
+    <display x="-195" y="-15" w="120" h="30" />
+    <datatype>text</datatype>
+    <initialvalue />
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="a6f957aa-25c0-486d-9a7a-9b575e216035" name="Status Code" type="Data">
+    <subsheetid>a981a883-bdf6-4ad8-abd1-00d57a4633fa</subsheetid>
+    <display x="-195" y="300" w="120" h="30" />
+    <datatype>number</datatype>
+    <initialvalue />
+    <private />
+    <alwaysinit />
+  </stage>
+  <stage stageid="a0d8ac7c-78d0-4c79-84e7-e10cc285668b" name="All ok?" type="Decision">
+    <subsheetid>a981a883-bdf6-4ad8-abd1-00d57a4633fa</subsheetid>
+    <loginhibit />
+    <display x="15" y="300" />
+    <decision expression="[Status Code] = 200" />
+    <ontrue>10f41636-4eae-4367-8f06-8f2f26aaaeff</ontrue>
+    <onfalse>9abce7b9-e747-4eb5-9aa9-1e57aac7c213</onfalse>
+  </stage>
+  <stage stageid="9abce7b9-e747-4eb5-9aa9-1e57aac7c213" name="Http error" type="Exception">
+    <subsheetid>a981a883-bdf6-4ad8-abd1-00d57a4633fa</subsheetid>
+    <display x="120" y="300" />
+    <exception localized="yes" type="System" detail="&quot;The scheduler API responeded with status: &quot; &amp;  [Status Code]" />
+  </stage>
+</process>

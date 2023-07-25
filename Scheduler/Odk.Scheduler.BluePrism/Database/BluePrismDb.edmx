@@ -1,0 +1,740 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="RPA_BluePrismModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="BPAProcess">
+          <Key>
+            <PropertyRef Name="processid" />
+          </Key>
+          <Property Name="processid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="ProcessType" Type="nvarchar" MaxLength="1" />
+          <Property Name="name" Type="nvarchar" MaxLength="128" />
+          <Property Name="description" Type="nvarchar" MaxLength="1000" />
+          <Property Name="version" Type="nvarchar" MaxLength="20" />
+          <Property Name="createdate" Type="datetime" />
+          <Property Name="createdby" Type="uniqueidentifier" />
+          <Property Name="lastmodifieddate" Type="datetime" />
+          <Property Name="lastmodifiedby" Type="uniqueidentifier" />
+          <Property Name="AttributeID" Type="int" Nullable="false" />
+          <Property Name="compressedxml" Type="image" />
+          <Property Name="processxml" Type="nvarchar(max)" />
+          <Property Name="wspublishname" Type="varchar" MaxLength="255" />
+          <Property Name="runmode" Type="int" Nullable="false" />
+          <Property Name="sharedObject" Type="bit" Nullable="false" />
+          <Property Name="forceLiteralForm" Type="bit" Nullable="false" />
+          <Property Name="useLegacyNamespace" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="BPAResource">
+          <Key>
+            <PropertyRef Name="resourceid" />
+          </Key>
+          <Property Name="resourceid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="name" Type="nvarchar" MaxLength="128" />
+          <Property Name="status" Type="nvarchar" MaxLength="10" />
+          <Property Name="processesrunning" Type="int" />
+          <Property Name="actionsrunning" Type="int" />
+          <Property Name="unitsallocated" Type="int" />
+          <Property Name="lastupdated" Type="datetime" />
+          <Property Name="AttributeID" Type="int" Nullable="false" />
+          <Property Name="pool" Type="uniqueidentifier" />
+          <Property Name="controller" Type="uniqueidentifier" />
+          <Property Name="diagnostics" Type="int" Nullable="false" />
+          <Property Name="logtoeventlog" Type="bit" Nullable="false" />
+          <Property Name="FQDN" Type="nvarchar(max)" />
+          <Property Name="ssl" Type="bit" Nullable="false" />
+          <Property Name="userID" Type="uniqueidentifier" />
+          <Property Name="DisplayStatus" Type="nvarchar" MaxLength="10" StoreGeneratedPattern="Computed" />
+        </EntityType>
+        <EntityType Name="BPASession">
+          <Key>
+            <PropertyRef Name="sessionid" />
+          </Key>
+          <Property Name="sessionid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="sessionnumber" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="startdatetime" Type="datetime" />
+          <Property Name="enddatetime" Type="datetime" />
+          <Property Name="processid" Type="uniqueidentifier" />
+          <Property Name="starterresourceid" Type="uniqueidentifier" />
+          <Property Name="starteruserid" Type="uniqueidentifier" />
+          <Property Name="runningresourceid" Type="uniqueidentifier" />
+          <Property Name="runningosusername" Type="nvarchar" MaxLength="50" />
+          <Property Name="statusid" Type="int" />
+          <Property Name="startparamsxml" Type="nvarchar(max)" />
+          <Property Name="logginglevelsxml" Type="nvarchar(max)" />
+          <Property Name="sessionstatexml" Type="nvarchar(max)" />
+          <Property Name="queueid" Type="int" />
+          <Property Name="stoprequested" Type="datetime" />
+          <Property Name="stoprequestack" Type="datetime" />
+          <Property Name="lastupdated" Type="datetime" />
+          <Property Name="laststage" Type="nvarchar(max)" />
+          <Property Name="warningthreshold" Type="int" />
+          <Property Name="starttimezoneoffset" Type="int" />
+          <Property Name="endtimezoneoffset" Type="int" />
+          <Property Name="lastupdatedtimezoneoffset" Type="int" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'RPA_BluePrism.dbo.BPVSession' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="BPVSession">
+          <Key>
+            <PropertyRef Name="sessionid" />
+            <PropertyRef Name="sessionnumber" />
+          </Key>
+          <Property Name="sessionid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="sessionnumber" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="startdatetime" Type="datetime" />
+          <Property Name="enddatetime" Type="datetime" />
+          <Property Name="processid" Type="uniqueidentifier" />
+          <Property Name="starterresourceid" Type="uniqueidentifier" />
+          <Property Name="starteruserid" Type="uniqueidentifier" />
+          <Property Name="runningresourceid" Type="uniqueidentifier" />
+          <Property Name="runningosusername" Type="nvarchar" MaxLength="50" />
+          <Property Name="statusid" Type="int" />
+          <Property Name="startparamsxml" Type="nvarchar(max)" />
+          <Property Name="logginglevelsxml" Type="nvarchar(max)" />
+          <Property Name="sessionstatexml" Type="nvarchar(max)" />
+          <Property Name="queueid" Type="int" />
+          <Property Name="stoprequested" Type="datetime" />
+          <Property Name="stoprequestack" Type="datetime" />
+          <Property Name="lastupdated" Type="datetime" />
+          <Property Name="laststage" Type="nvarchar(max)" />
+          <Property Name="warningthreshold" Type="int" />
+          <Property Name="starttimezoneoffset" Type="int" />
+          <Property Name="endtimezoneoffset" Type="int" />
+          <Property Name="lastupdatedtimezoneoffset" Type="int" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'RPA_BluePrism.dbo.BPVSessionInfo' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="BPVSessionInfo">
+          <Key>
+            <PropertyRef Name="sessionid" />
+            <PropertyRef Name="sessionnumber" />
+          </Key>
+          <Property Name="sessionid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="sessionnumber" Type="int" Nullable="false" />
+          <Property Name="startdatetime" Type="datetime" />
+          <Property Name="starttimezoneoffset" Type="int" />
+          <Property Name="enddatetime" Type="datetime" />
+          <Property Name="endtimezoneoffset" Type="int" />
+          <Property Name="processid" Type="uniqueidentifier" />
+          <Property Name="processname" Type="nvarchar" MaxLength="128" />
+          <Property Name="starterresourceid" Type="uniqueidentifier" />
+          <Property Name="starterresourcename" Type="nvarchar" MaxLength="128" />
+          <Property Name="starteruserid" Type="uniqueidentifier" />
+          <Property Name="starterusername" Type="nvarchar" MaxLength="128" />
+          <Property Name="runningresourceid" Type="uniqueidentifier" />
+          <Property Name="runningresourcename" Type="nvarchar" MaxLength="128" />
+          <Property Name="runningosusername" Type="nvarchar" MaxLength="50" />
+          <Property Name="statusid" Type="int" />
+          <Property Name="startparamsxml" Type="nvarchar(max)" />
+          <Property Name="logginglevelsxml" Type="nvarchar(max)" />
+          <Property Name="sessionstatexml" Type="nvarchar(max)" />
+          <Property Name="queueid" Type="int" />
+          <Property Name="lastupdated" Type="datetime" />
+          <Property Name="lastupdatedtimezoneoffset" Type="int" />
+          <Property Name="laststage" Type="nvarchar(max)" />
+          <Property Name="warningthreshold" Type="int" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'RPA_BluePrism.dbo.BPVWorkQueueItem' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="BPVWorkQueueItem">
+          <Key>
+            <PropertyRef Name="ident" />
+            <PropertyRef Name="id" />
+            <PropertyRef Name="queueid" />
+            <PropertyRef Name="queueident" />
+            <PropertyRef Name="priority" />
+            <PropertyRef Name="prevworktime" />
+            <PropertyRef Name="state" />
+          </Key>
+          <Property Name="ident" Type="bigint" Nullable="false" />
+          <Property Name="id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="queueid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="keyvalue" Type="nvarchar" MaxLength="255" />
+          <Property Name="status" Type="nvarchar" MaxLength="255" />
+          <Property Name="attempt" Type="int" />
+          <Property Name="loaded" Type="datetime" />
+          <Property Name="locked" Type="datetime" />
+          <Property Name="completed" Type="datetime" />
+          <Property Name="exception" Type="datetime" />
+          <Property Name="exceptionreason" Type="nvarchar(max)" />
+          <Property Name="deferred" Type="datetime" />
+          <Property Name="worktime" Type="int" />
+          <Property Name="data" Type="nvarchar(max)" />
+          <Property Name="queueident" Type="int" Nullable="false" />
+          <Property Name="sessionid" Type="uniqueidentifier" />
+          <Property Name="priority" Type="int" Nullable="false" />
+          <Property Name="queuepositiondate" Type="datetime" />
+          <Property Name="prevworktime" Type="int" Nullable="false" />
+          <Property Name="attemptworktime" Type="int" />
+          <Property Name="finished" Type="datetime" />
+          <Property Name="state" Type="int" Nullable="false" />
+          <Property Name="lastupdated" Type="datetime" />
+          <Property Name="exceptionreasonvarchar" Type="nvarchar" MaxLength="400" />
+          <Property Name="exceptionreasontag" Type="nvarchar" MaxLength="415" />
+          <Property Name="encryptid" Type="int" />
+        </EntityType>
+        <Association Name="FK_BPASession_BPAProcess">
+          <End Role="BPAProcess" Type="Self.BPAProcess" Multiplicity="0..1" />
+          <End Role="BPASession" Type="Self.BPASession" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BPAProcess">
+              <PropertyRef Name="processid" />
+            </Principal>
+            <Dependent Role="BPASession">
+              <PropertyRef Name="processid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_BPASession_BPAResource">
+          <End Role="BPAResource" Type="Self.BPAResource" Multiplicity="0..1" />
+          <End Role="BPASession" Type="Self.BPASession" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BPAResource">
+              <PropertyRef Name="resourceid" />
+            </Principal>
+            <Dependent Role="BPASession">
+              <PropertyRef Name="starterresourceid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_BPASession_BPAResource1">
+          <End Role="BPAResource" Type="Self.BPAResource" Multiplicity="0..1" />
+          <End Role="BPASession" Type="Self.BPASession" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BPAResource">
+              <PropertyRef Name="resourceid" />
+            </Principal>
+            <Dependent Role="BPASession">
+              <PropertyRef Name="runningresourceid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="RPA_BluePrismModelStoreContainer">
+          <EntitySet Name="BPAProcess" EntityType="Self.BPAProcess" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="BPAResource" EntityType="Self.BPAResource" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="BPASession" EntityType="Self.BPASession" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="BPVSession" EntityType="Self.BPVSession" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [BPVSession].[sessionid] AS [sessionid], 
+    [BPVSession].[sessionnumber] AS [sessionnumber], 
+    [BPVSession].[startdatetime] AS [startdatetime], 
+    [BPVSession].[enddatetime] AS [enddatetime], 
+    [BPVSession].[processid] AS [processid], 
+    [BPVSession].[starterresourceid] AS [starterresourceid], 
+    [BPVSession].[starteruserid] AS [starteruserid], 
+    [BPVSession].[runningresourceid] AS [runningresourceid], 
+    [BPVSession].[runningosusername] AS [runningosusername], 
+    [BPVSession].[statusid] AS [statusid], 
+    [BPVSession].[startparamsxml] AS [startparamsxml], 
+    [BPVSession].[logginglevelsxml] AS [logginglevelsxml], 
+    [BPVSession].[sessionstatexml] AS [sessionstatexml], 
+    [BPVSession].[queueid] AS [queueid], 
+    [BPVSession].[stoprequested] AS [stoprequested], 
+    [BPVSession].[stoprequestack] AS [stoprequestack], 
+    [BPVSession].[lastupdated] AS [lastupdated], 
+    [BPVSession].[laststage] AS [laststage], 
+    [BPVSession].[warningthreshold] AS [warningthreshold], 
+    [BPVSession].[starttimezoneoffset] AS [starttimezoneoffset], 
+    [BPVSession].[endtimezoneoffset] AS [endtimezoneoffset], 
+    [BPVSession].[lastupdatedtimezoneoffset] AS [lastupdatedtimezoneoffset]
+    FROM [dbo].[BPVSession] AS [BPVSession]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="BPVSessionInfo" EntityType="Self.BPVSessionInfo" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [BPVSessionInfo].[sessionid] AS [sessionid], 
+    [BPVSessionInfo].[sessionnumber] AS [sessionnumber], 
+    [BPVSessionInfo].[startdatetime] AS [startdatetime], 
+    [BPVSessionInfo].[starttimezoneoffset] AS [starttimezoneoffset], 
+    [BPVSessionInfo].[enddatetime] AS [enddatetime], 
+    [BPVSessionInfo].[endtimezoneoffset] AS [endtimezoneoffset], 
+    [BPVSessionInfo].[processid] AS [processid], 
+    [BPVSessionInfo].[processname] AS [processname], 
+    [BPVSessionInfo].[starterresourceid] AS [starterresourceid], 
+    [BPVSessionInfo].[starterresourcename] AS [starterresourcename], 
+    [BPVSessionInfo].[starteruserid] AS [starteruserid], 
+    [BPVSessionInfo].[starterusername] AS [starterusername], 
+    [BPVSessionInfo].[runningresourceid] AS [runningresourceid], 
+    [BPVSessionInfo].[runningresourcename] AS [runningresourcename], 
+    [BPVSessionInfo].[runningosusername] AS [runningosusername], 
+    [BPVSessionInfo].[statusid] AS [statusid], 
+    [BPVSessionInfo].[startparamsxml] AS [startparamsxml], 
+    [BPVSessionInfo].[logginglevelsxml] AS [logginglevelsxml], 
+    [BPVSessionInfo].[sessionstatexml] AS [sessionstatexml], 
+    [BPVSessionInfo].[queueid] AS [queueid], 
+    [BPVSessionInfo].[lastupdated] AS [lastupdated], 
+    [BPVSessionInfo].[lastupdatedtimezoneoffset] AS [lastupdatedtimezoneoffset], 
+    [BPVSessionInfo].[laststage] AS [laststage], 
+    [BPVSessionInfo].[warningthreshold] AS [warningthreshold]
+    FROM [dbo].[BPVSessionInfo] AS [BPVSessionInfo]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="BPVWorkQueueItem" EntityType="Self.BPVWorkQueueItem" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [BPVWorkQueueItem].[ident] AS [ident], 
+    [BPVWorkQueueItem].[id] AS [id], 
+    [BPVWorkQueueItem].[queueid] AS [queueid], 
+    [BPVWorkQueueItem].[keyvalue] AS [keyvalue], 
+    [BPVWorkQueueItem].[status] AS [status], 
+    [BPVWorkQueueItem].[attempt] AS [attempt], 
+    [BPVWorkQueueItem].[loaded] AS [loaded], 
+    [BPVWorkQueueItem].[locked] AS [locked], 
+    [BPVWorkQueueItem].[completed] AS [completed], 
+    [BPVWorkQueueItem].[exception] AS [exception], 
+    [BPVWorkQueueItem].[exceptionreason] AS [exceptionreason], 
+    [BPVWorkQueueItem].[deferred] AS [deferred], 
+    [BPVWorkQueueItem].[worktime] AS [worktime], 
+    [BPVWorkQueueItem].[data] AS [data], 
+    [BPVWorkQueueItem].[queueident] AS [queueident], 
+    [BPVWorkQueueItem].[sessionid] AS [sessionid], 
+    [BPVWorkQueueItem].[priority] AS [priority], 
+    [BPVWorkQueueItem].[queuepositiondate] AS [queuepositiondate], 
+    [BPVWorkQueueItem].[prevworktime] AS [prevworktime], 
+    [BPVWorkQueueItem].[attemptworktime] AS [attemptworktime], 
+    [BPVWorkQueueItem].[finished] AS [finished], 
+    [BPVWorkQueueItem].[state] AS [state], 
+    [BPVWorkQueueItem].[lastupdated] AS [lastupdated], 
+    [BPVWorkQueueItem].[exceptionreasonvarchar] AS [exceptionreasonvarchar], 
+    [BPVWorkQueueItem].[exceptionreasontag] AS [exceptionreasontag], 
+    [BPVWorkQueueItem].[encryptid] AS [encryptid]
+    FROM [dbo].[BPVWorkQueueItem] AS [BPVWorkQueueItem]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="FK_BPASession_BPAProcess" Association="Self.FK_BPASession_BPAProcess">
+            <End Role="BPAProcess" EntitySet="BPAProcess" />
+            <End Role="BPASession" EntitySet="BPASession" />
+          </AssociationSet>
+          <AssociationSet Name="FK_BPASession_BPAResource" Association="Self.FK_BPASession_BPAResource">
+            <End Role="BPAResource" EntitySet="BPAResource" />
+            <End Role="BPASession" EntitySet="BPASession" />
+          </AssociationSet>
+          <AssociationSet Name="FK_BPASession_BPAResource1" Association="Self.FK_BPASession_BPAResource1">
+            <End Role="BPAResource" EntitySet="BPAResource" />
+            <End Role="BPASession" EntitySet="BPASession" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="RPA_BluePrismModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="BPAProcess">
+          <Key>
+            <PropertyRef Name="processid" />
+          </Key>
+          <Property Name="processid" Type="Guid" Nullable="false" />
+          <Property Name="ProcessType" Type="String" MaxLength="1" FixedLength="false" Unicode="true" />
+          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="description" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="version" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="createdate" Type="DateTime" Precision="3" />
+          <Property Name="createdby" Type="Guid" />
+          <Property Name="lastmodifieddate" Type="DateTime" Precision="3" />
+          <Property Name="lastmodifiedby" Type="Guid" />
+          <Property Name="AttributeID" Type="Int32" Nullable="false" />
+          <Property Name="compressedxml" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="processxml" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="wspublishname" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="runmode" Type="Int32" Nullable="false" />
+          <Property Name="sharedObject" Type="Boolean" Nullable="false" />
+          <Property Name="forceLiteralForm" Type="Boolean" Nullable="false" />
+          <Property Name="useLegacyNamespace" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="BPASession" Relationship="Self.FK_BPASession_BPAProcess" FromRole="BPAProcess" ToRole="BPASession" />
+        </EntityType>
+        <EntityType Name="BPAResource">
+          <Key>
+            <PropertyRef Name="resourceid" />
+          </Key>
+          <Property Name="resourceid" Type="Guid" Nullable="false" />
+          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="status" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="processesrunning" Type="Int32" />
+          <Property Name="actionsrunning" Type="Int32" />
+          <Property Name="unitsallocated" Type="Int32" />
+          <Property Name="lastupdated" Type="DateTime" Precision="3" />
+          <Property Name="AttributeID" Type="Int32" Nullable="false" />
+          <Property Name="pool" Type="Guid" />
+          <Property Name="controller" Type="Guid" />
+          <Property Name="diagnostics" Type="Int32" Nullable="false" />
+          <Property Name="logtoeventlog" Type="Boolean" Nullable="false" />
+          <Property Name="FQDN" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ssl" Type="Boolean" Nullable="false" />
+          <Property Name="userID" Type="Guid" />
+          <Property Name="DisplayStatus" Type="String" MaxLength="10" FixedLength="false" Unicode="true" annotation:StoreGeneratedPattern="Computed" />
+          <NavigationProperty Name="startingresource" Relationship="Self.FK_BPASession_BPAResource" FromRole="BPAResource" ToRole="BPASession" />
+          <NavigationProperty Name="runningresource" Relationship="Self.FK_BPASession_BPAResource1" FromRole="BPAResource" ToRole="BPASession" />
+        </EntityType>
+        <EntityType Name="BPASession">
+          <Key>
+            <PropertyRef Name="sessionid" />
+          </Key>
+          <Property Name="sessionid" Type="Guid" Nullable="false" />
+          <Property Name="sessionnumber" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="startdatetime" Type="DateTime" Precision="3" />
+          <Property Name="enddatetime" Type="DateTime" Precision="3" />
+          <Property Name="processid" Type="Guid" />
+          <Property Name="starterresourceid" Type="Guid" />
+          <Property Name="starteruserid" Type="Guid" />
+          <Property Name="runningresourceid" Type="Guid" />
+          <Property Name="runningosusername" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="statusid" Type="Int32" />
+          <Property Name="startparamsxml" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="logginglevelsxml" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="sessionstatexml" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="queueid" Type="Int32" />
+          <Property Name="stoprequested" Type="DateTime" Precision="3" />
+          <Property Name="stoprequestack" Type="DateTime" Precision="3" />
+          <Property Name="lastupdated" Type="DateTime" Precision="3" />
+          <Property Name="laststage" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="warningthreshold" Type="Int32" />
+          <Property Name="starttimezoneoffset" Type="Int32" />
+          <Property Name="endtimezoneoffset" Type="Int32" />
+          <Property Name="lastupdatedtimezoneoffset" Type="Int32" />
+          <NavigationProperty Name="BPAProcess" Relationship="Self.FK_BPASession_BPAProcess" FromRole="BPASession" ToRole="BPAProcess" />
+          <NavigationProperty Name="BPAStartResource" Relationship="Self.FK_BPASession_BPAResource" FromRole="BPASession" ToRole="BPAResource" />
+          <NavigationProperty Name="BPARunningResource" Relationship="Self.FK_BPASession_BPAResource1" FromRole="BPASession" ToRole="BPAResource" />
+        </EntityType>
+        <EntityType Name="BPVSession">
+          <Key>
+            <PropertyRef Name="sessionid" />
+            <PropertyRef Name="sessionnumber" />
+          </Key>
+          <Property Name="sessionid" Type="Guid" Nullable="false" />
+          <Property Name="sessionnumber" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="startdatetime" Type="DateTime" Precision="3" />
+          <Property Name="enddatetime" Type="DateTime" Precision="3" />
+          <Property Name="processid" Type="Guid" />
+          <Property Name="starterresourceid" Type="Guid" />
+          <Property Name="starteruserid" Type="Guid" />
+          <Property Name="runningresourceid" Type="Guid" />
+          <Property Name="runningosusername" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="statusid" Type="Int32" />
+          <Property Name="startparamsxml" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="logginglevelsxml" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="sessionstatexml" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="queueid" Type="Int32" />
+          <Property Name="stoprequested" Type="DateTime" Precision="3" />
+          <Property Name="stoprequestack" Type="DateTime" Precision="3" />
+          <Property Name="lastupdated" Type="DateTime" Precision="3" />
+          <Property Name="laststage" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="warningthreshold" Type="Int32" />
+          <Property Name="starttimezoneoffset" Type="Int32" />
+          <Property Name="endtimezoneoffset" Type="Int32" />
+          <Property Name="lastupdatedtimezoneoffset" Type="Int32" />
+        </EntityType>
+        <EntityType Name="BPVSessionInfo">
+          <Key>
+            <PropertyRef Name="sessionid" />
+            <PropertyRef Name="sessionnumber" />
+          </Key>
+          <Property Name="sessionid" Type="Guid" Nullable="false" />
+          <Property Name="sessionnumber" Type="Int32" Nullable="false" />
+          <Property Name="startdatetime" Type="DateTime" Precision="3" />
+          <Property Name="starttimezoneoffset" Type="Int32" />
+          <Property Name="enddatetime" Type="DateTime" Precision="3" />
+          <Property Name="endtimezoneoffset" Type="Int32" />
+          <Property Name="processid" Type="Guid" />
+          <Property Name="processname" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="starterresourceid" Type="Guid" />
+          <Property Name="starterresourcename" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="starteruserid" Type="Guid" />
+          <Property Name="starterusername" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="runningresourceid" Type="Guid" />
+          <Property Name="runningresourcename" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="runningosusername" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="statusid" Type="Int32" />
+          <Property Name="startparamsxml" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="logginglevelsxml" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="sessionstatexml" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="queueid" Type="Int32" />
+          <Property Name="lastupdated" Type="DateTime" Precision="3" />
+          <Property Name="lastupdatedtimezoneoffset" Type="Int32" />
+          <Property Name="laststage" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="warningthreshold" Type="Int32" />
+        </EntityType>
+        <EntityType Name="BPVWorkQueueItem">
+          <Key>
+            <PropertyRef Name="ident" />
+            <PropertyRef Name="id" />
+            <PropertyRef Name="queueid" />
+            <PropertyRef Name="queueident" />
+            <PropertyRef Name="priority" />
+            <PropertyRef Name="prevworktime" />
+            <PropertyRef Name="state" />
+          </Key>
+          <Property Name="ident" Type="Int64" Nullable="false" />
+          <Property Name="id" Type="Guid" Nullable="false" />
+          <Property Name="queueid" Type="Guid" Nullable="false" />
+          <Property Name="keyvalue" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="status" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="attempt" Type="Int32" />
+          <Property Name="loaded" Type="DateTime" Precision="3" />
+          <Property Name="locked" Type="DateTime" Precision="3" />
+          <Property Name="completed" Type="DateTime" Precision="3" />
+          <Property Name="exception" Type="DateTime" Precision="3" />
+          <Property Name="exceptionreason" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="deferred" Type="DateTime" Precision="3" />
+          <Property Name="worktime" Type="Int32" />
+          <Property Name="data" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="queueident" Type="Int32" Nullable="false" />
+          <Property Name="sessionid" Type="Guid" />
+          <Property Name="priority" Type="Int32" Nullable="false" />
+          <Property Name="queuepositiondate" Type="DateTime" Precision="3" />
+          <Property Name="prevworktime" Type="Int32" Nullable="false" />
+          <Property Name="attemptworktime" Type="Int32" />
+          <Property Name="finished" Type="DateTime" Precision="3" />
+          <Property Name="state" Type="Int32" Nullable="false" />
+          <Property Name="lastupdated" Type="DateTime" Precision="3" />
+          <Property Name="exceptionreasonvarchar" Type="String" MaxLength="400" FixedLength="false" Unicode="true" />
+          <Property Name="exceptionreasontag" Type="String" MaxLength="415" FixedLength="false" Unicode="true" />
+          <Property Name="encryptid" Type="Int32" />
+        </EntityType>
+        <Association Name="FK_BPASession_BPAProcess">
+          <End Role="BPAProcess" Type="Self.BPAProcess" Multiplicity="0..1" />
+          <End Role="BPASession" Type="Self.BPASession" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BPAProcess">
+              <PropertyRef Name="processid" />
+            </Principal>
+            <Dependent Role="BPASession">
+              <PropertyRef Name="processid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_BPASession_BPAResource">
+          <End Role="BPAResource" Type="Self.BPAResource" Multiplicity="0..1" />
+          <End Role="BPASession" Type="Self.BPASession" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BPAResource">
+              <PropertyRef Name="resourceid" />
+            </Principal>
+            <Dependent Role="BPASession">
+              <PropertyRef Name="starterresourceid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_BPASession_BPAResource1">
+          <End Role="BPAResource" Type="Self.BPAResource" Multiplicity="0..1" />
+          <End Role="BPASession" Type="Self.BPASession" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BPAResource">
+              <PropertyRef Name="resourceid" />
+            </Principal>
+            <Dependent Role="BPASession">
+              <PropertyRef Name="runningresourceid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="RPA_BluePrismEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="BPAProcess" EntityType="Self.BPAProcess" />
+          <EntitySet Name="BPAResource" EntityType="Self.BPAResource" />
+          <EntitySet Name="BPASession" EntityType="Self.BPASession" />
+          <EntitySet Name="BPVSession" EntityType="Self.BPVSession" />
+          <EntitySet Name="BPVSessionInfo" EntityType="Self.BPVSessionInfo" />
+          <EntitySet Name="BPVWorkQueueItem" EntityType="Self.BPVWorkQueueItem" />
+          <AssociationSet Name="FK_BPASession_BPAProcess" Association="Self.FK_BPASession_BPAProcess">
+            <End Role="BPAProcess" EntitySet="BPAProcess" />
+            <End Role="BPASession" EntitySet="BPASession" />
+          </AssociationSet>
+          <AssociationSet Name="FK_BPASession_BPAResource" Association="Self.FK_BPASession_BPAResource">
+            <End Role="BPAResource" EntitySet="BPAResource" />
+            <End Role="BPASession" EntitySet="BPASession" />
+          </AssociationSet>
+          <AssociationSet Name="FK_BPASession_BPAResource1" Association="Self.FK_BPASession_BPAResource1">
+            <End Role="BPAResource" EntitySet="BPAResource" />
+            <End Role="BPASession" EntitySet="BPASession" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="RPA_BluePrismModelStoreContainer" CdmEntityContainer="RPA_BluePrismEntities">
+          <EntitySetMapping Name="BPAProcess">
+            <EntityTypeMapping TypeName="RPA_BluePrismModel.BPAProcess">
+              <MappingFragment StoreEntitySet="BPAProcess">
+                <ScalarProperty Name="processid" ColumnName="processid" />
+                <ScalarProperty Name="ProcessType" ColumnName="ProcessType" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="description" ColumnName="description" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="createdate" ColumnName="createdate" />
+                <ScalarProperty Name="createdby" ColumnName="createdby" />
+                <ScalarProperty Name="lastmodifieddate" ColumnName="lastmodifieddate" />
+                <ScalarProperty Name="lastmodifiedby" ColumnName="lastmodifiedby" />
+                <ScalarProperty Name="AttributeID" ColumnName="AttributeID" />
+                <ScalarProperty Name="compressedxml" ColumnName="compressedxml" />
+                <ScalarProperty Name="processxml" ColumnName="processxml" />
+                <ScalarProperty Name="wspublishname" ColumnName="wspublishname" />
+                <ScalarProperty Name="runmode" ColumnName="runmode" />
+                <ScalarProperty Name="sharedObject" ColumnName="sharedObject" />
+                <ScalarProperty Name="forceLiteralForm" ColumnName="forceLiteralForm" />
+                <ScalarProperty Name="useLegacyNamespace" ColumnName="useLegacyNamespace" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="BPAResource">
+            <EntityTypeMapping TypeName="RPA_BluePrismModel.BPAResource">
+              <MappingFragment StoreEntitySet="BPAResource">
+                <ScalarProperty Name="resourceid" ColumnName="resourceid" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="processesrunning" ColumnName="processesrunning" />
+                <ScalarProperty Name="actionsrunning" ColumnName="actionsrunning" />
+                <ScalarProperty Name="unitsallocated" ColumnName="unitsallocated" />
+                <ScalarProperty Name="lastupdated" ColumnName="lastupdated" />
+                <ScalarProperty Name="AttributeID" ColumnName="AttributeID" />
+                <ScalarProperty Name="pool" ColumnName="pool" />
+                <ScalarProperty Name="controller" ColumnName="controller" />
+                <ScalarProperty Name="diagnostics" ColumnName="diagnostics" />
+                <ScalarProperty Name="logtoeventlog" ColumnName="logtoeventlog" />
+                <ScalarProperty Name="FQDN" ColumnName="FQDN" />
+                <ScalarProperty Name="ssl" ColumnName="ssl" />
+                <ScalarProperty Name="userID" ColumnName="userID" />
+                <ScalarProperty Name="DisplayStatus" ColumnName="DisplayStatus" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="BPASession">
+            <EntityTypeMapping TypeName="RPA_BluePrismModel.BPASession">
+              <MappingFragment StoreEntitySet="BPASession">
+                <ScalarProperty Name="sessionid" ColumnName="sessionid" />
+                <ScalarProperty Name="sessionnumber" ColumnName="sessionnumber" />
+                <ScalarProperty Name="startdatetime" ColumnName="startdatetime" />
+                <ScalarProperty Name="enddatetime" ColumnName="enddatetime" />
+                <ScalarProperty Name="processid" ColumnName="processid" />
+                <ScalarProperty Name="starterresourceid" ColumnName="starterresourceid" />
+                <ScalarProperty Name="starteruserid" ColumnName="starteruserid" />
+                <ScalarProperty Name="runningresourceid" ColumnName="runningresourceid" />
+                <ScalarProperty Name="runningosusername" ColumnName="runningosusername" />
+                <ScalarProperty Name="statusid" ColumnName="statusid" />
+                <ScalarProperty Name="startparamsxml" ColumnName="startparamsxml" />
+                <ScalarProperty Name="logginglevelsxml" ColumnName="logginglevelsxml" />
+                <ScalarProperty Name="sessionstatexml" ColumnName="sessionstatexml" />
+                <ScalarProperty Name="queueid" ColumnName="queueid" />
+                <ScalarProperty Name="stoprequested" ColumnName="stoprequested" />
+                <ScalarProperty Name="stoprequestack" ColumnName="stoprequestack" />
+                <ScalarProperty Name="lastupdated" ColumnName="lastupdated" />
+                <ScalarProperty Name="laststage" ColumnName="laststage" />
+                <ScalarProperty Name="warningthreshold" ColumnName="warningthreshold" />
+                <ScalarProperty Name="starttimezoneoffset" ColumnName="starttimezoneoffset" />
+                <ScalarProperty Name="endtimezoneoffset" ColumnName="endtimezoneoffset" />
+                <ScalarProperty Name="lastupdatedtimezoneoffset" ColumnName="lastupdatedtimezoneoffset" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="BPVSession">
+            <EntityTypeMapping TypeName="RPA_BluePrismModel.BPVSession">
+              <MappingFragment StoreEntitySet="BPVSession">
+                <ScalarProperty Name="sessionid" ColumnName="sessionid" />
+                <ScalarProperty Name="sessionnumber" ColumnName="sessionnumber" />
+                <ScalarProperty Name="startdatetime" ColumnName="startdatetime" />
+                <ScalarProperty Name="enddatetime" ColumnName="enddatetime" />
+                <ScalarProperty Name="processid" ColumnName="processid" />
+                <ScalarProperty Name="starterresourceid" ColumnName="starterresourceid" />
+                <ScalarProperty Name="starteruserid" ColumnName="starteruserid" />
+                <ScalarProperty Name="runningresourceid" ColumnName="runningresourceid" />
+                <ScalarProperty Name="runningosusername" ColumnName="runningosusername" />
+                <ScalarProperty Name="statusid" ColumnName="statusid" />
+                <ScalarProperty Name="startparamsxml" ColumnName="startparamsxml" />
+                <ScalarProperty Name="logginglevelsxml" ColumnName="logginglevelsxml" />
+                <ScalarProperty Name="sessionstatexml" ColumnName="sessionstatexml" />
+                <ScalarProperty Name="queueid" ColumnName="queueid" />
+                <ScalarProperty Name="stoprequested" ColumnName="stoprequested" />
+                <ScalarProperty Name="stoprequestack" ColumnName="stoprequestack" />
+                <ScalarProperty Name="lastupdated" ColumnName="lastupdated" />
+                <ScalarProperty Name="laststage" ColumnName="laststage" />
+                <ScalarProperty Name="warningthreshold" ColumnName="warningthreshold" />
+                <ScalarProperty Name="starttimezoneoffset" ColumnName="starttimezoneoffset" />
+                <ScalarProperty Name="endtimezoneoffset" ColumnName="endtimezoneoffset" />
+                <ScalarProperty Name="lastupdatedtimezoneoffset" ColumnName="lastupdatedtimezoneoffset" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="BPVSessionInfo">
+            <EntityTypeMapping TypeName="RPA_BluePrismModel.BPVSessionInfo">
+              <MappingFragment StoreEntitySet="BPVSessionInfo">
+                <ScalarProperty Name="sessionid" ColumnName="sessionid" />
+                <ScalarProperty Name="sessionnumber" ColumnName="sessionnumber" />
+                <ScalarProperty Name="startdatetime" ColumnName="startdatetime" />
+                <ScalarProperty Name="starttimezoneoffset" ColumnName="starttimezoneoffset" />
+                <ScalarProperty Name="enddatetime" ColumnName="enddatetime" />
+                <ScalarProperty Name="endtimezoneoffset" ColumnName="endtimezoneoffset" />
+                <ScalarProperty Name="processid" ColumnName="processid" />
+                <ScalarProperty Name="processname" ColumnName="processname" />
+                <ScalarProperty Name="starterresourceid" ColumnName="starterresourceid" />
+                <ScalarProperty Name="starterresourcename" ColumnName="starterresourcename" />
+                <ScalarProperty Name="starteruserid" ColumnName="starteruserid" />
+                <ScalarProperty Name="starterusername" ColumnName="starterusername" />
+                <ScalarProperty Name="runningresourceid" ColumnName="runningresourceid" />
+                <ScalarProperty Name="runningresourcename" ColumnName="runningresourcename" />
+                <ScalarProperty Name="runningosusername" ColumnName="runningosusername" />
+                <ScalarProperty Name="statusid" ColumnName="statusid" />
+                <ScalarProperty Name="startparamsxml" ColumnName="startparamsxml" />
+                <ScalarProperty Name="logginglevelsxml" ColumnName="logginglevelsxml" />
+                <ScalarProperty Name="sessionstatexml" ColumnName="sessionstatexml" />
+                <ScalarProperty Name="queueid" ColumnName="queueid" />
+                <ScalarProperty Name="lastupdated" ColumnName="lastupdated" />
+                <ScalarProperty Name="lastupdatedtimezoneoffset" ColumnName="lastupdatedtimezoneoffset" />
+                <ScalarProperty Name="laststage" ColumnName="laststage" />
+                <ScalarProperty Name="warningthreshold" ColumnName="warningthreshold" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="BPVWorkQueueItem">
+            <EntityTypeMapping TypeName="RPA_BluePrismModel.BPVWorkQueueItem">
+              <MappingFragment StoreEntitySet="BPVWorkQueueItem">
+                <ScalarProperty Name="ident" ColumnName="ident" />
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="queueid" ColumnName="queueid" />
+                <ScalarProperty Name="keyvalue" ColumnName="keyvalue" />
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="attempt" ColumnName="attempt" />
+                <ScalarProperty Name="loaded" ColumnName="loaded" />
+                <ScalarProperty Name="locked" ColumnName="locked" />
+                <ScalarProperty Name="completed" ColumnName="completed" />
+                <ScalarProperty Name="exception" ColumnName="exception" />
+                <ScalarProperty Name="exceptionreason" ColumnName="exceptionreason" />
+                <ScalarProperty Name="deferred" ColumnName="deferred" />
+                <ScalarProperty Name="worktime" ColumnName="worktime" />
+                <ScalarProperty Name="data" ColumnName="data" />
+                <ScalarProperty Name="queueident" ColumnName="queueident" />
+                <ScalarProperty Name="sessionid" ColumnName="sessionid" />
+                <ScalarProperty Name="priority" ColumnName="priority" />
+                <ScalarProperty Name="queuepositiondate" ColumnName="queuepositiondate" />
+                <ScalarProperty Name="prevworktime" ColumnName="prevworktime" />
+                <ScalarProperty Name="attemptworktime" ColumnName="attemptworktime" />
+                <ScalarProperty Name="finished" ColumnName="finished" />
+                <ScalarProperty Name="state" ColumnName="state" />
+                <ScalarProperty Name="lastupdated" ColumnName="lastupdated" />
+                <ScalarProperty Name="exceptionreasonvarchar" ColumnName="exceptionreasonvarchar" />
+                <ScalarProperty Name="exceptionreasontag" ColumnName="exceptionreasontag" />
+                <ScalarProperty Name="encryptid" ColumnName="encryptid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

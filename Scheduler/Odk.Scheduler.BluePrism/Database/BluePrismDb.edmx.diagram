@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="796baa77ba6a40e4ae53393a2a3b523d" Name="Diagram1">
+        <EntityTypeShape EntityType="RPA_BluePrismModel.BPAProcess" Width="1.5" PointX="5.75" PointY="1.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="RPA_BluePrismModel.BPAResource" Width="1.5" PointX="0.75" PointY="1.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="RPA_BluePrismModel.BPASession" Width="1.5" PointX="3" PointY="1.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="RPA_BluePrismModel.BPVSession" Width="1.5" PointX="9" PointY="0.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="RPA_BluePrismModel.BPVSessionInfo" Width="1.5" PointX="10.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="RPA_BluePrismModel.BPVWorkQueueItem" Width="1.5" PointX="13" PointY="0.875" IsExpanded="true" />
+        <AssociationConnector Association="RPA_BluePrismModel.FK_BPASession_BPAProcess" ManuallyRouted="false" />
+        <AssociationConnector Association="RPA_BluePrismModel.FK_BPASession_BPAResource" ManuallyRouted="false" />
+        <AssociationConnector Association="RPA_BluePrismModel.FK_BPASession_BPAResource1" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
